@@ -1,31 +1,42 @@
-while 1:
+if __name__ == "__main__":
     ans = 0
-    s = input()
-    N, X = s.split()
-    grade_day = []
+    n = int(input())
 
-    if s != "":
-        for _ in range(int(N)):
-            grade, day = input().split()
-            grade_day.append([int(day), int(grade)])
-        grade_day = sorted(grade_day)
-        days_count = 0
-        res = 0
-        for i in range(int(N)):
-            days_count += grade_day[i][0]
-            res += grade_day[i][1]
-            if days_count <= int(X):
-                if res >= ans:
-                    ans = res
-            else:
-                temp = days_count - grade_day[i][0]
-                if grade_day[i][1] > grade_day[i-1][1] and temp - grade_day[i-1][0] + grade_day[i][0] <= int(X):
-                    days_count -= grade_day[i-1][0]
-                    res -= grade_day[i-1][1]
-                    ans = res
-                else:
-                    days_count -= grade_day[i][0]
-                    res -= grade_day[i][1]
-        print(ans)
-    else:
-        break
+    an = input().split()
+    an = list(map(int, an))
+
+    def find_min(arr):
+        if arr:
+            res = min(arr)
+            for i in range(len(arr)):
+                arr[i] = arr[i] - res
+            new_arr = [x for x in arr if x != 0]
+            flag = True
+            pos = 0
+            for i in range(len(arr)):
+                if flag:
+                    if arr[i] == 0:
+                        pos = i
+                    else:
+                        flag = False
+            for i in range(pos):
+                arr.pop(i)
+            flag = True
+            pos = len(arr)-1
+            for i in range(len(arr), -1):
+                if flag:
+                    if arr[i] == 0:
+                        pos = i
+                    else:
+                        flag = False
+            for i in range(pos, len(arr)):
+                arr.pop(i)
+            if arr:
+                zero_arr = [x for x in arr if x == 0]
+                bias = len(zero_arr) + 1
+                return res + bias + find_min(new_arr)
+        else:
+            return 0
+    ans = find_min(an)
+    print(ans)
+
